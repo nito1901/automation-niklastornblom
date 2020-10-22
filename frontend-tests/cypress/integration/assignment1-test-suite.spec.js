@@ -1,13 +1,17 @@
 /// <reference types="cypress" />
 
+// Function to log in to the system
+Cypress.Commands.add('login', (user, password) => {
+    cy.visit('http://localhost:3000')
+    cy.contains('Login')
+    cy.get('div.field:nth-child(1) > input:nth-child(2)').type(user)
+    cy.get('div.field:nth-child(2) > input:nth-child(2)').type(password)
+    cy.get('.btn').click()
+});
 
 describe('Assignment1 test suite', function(){
     it('create room', function(){
-        cy.visit('http://localhost:3000')
-        cy.contains('Login')
-        cy.get('div.field:nth-child(1) > input:nth-child(2)').type('tester01')
-        cy.get('div.field:nth-child(2) > input:nth-child(2)').type('GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.get('.btn').click()
+        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
         cy.contains('Rooms')
         cy.get(':nth-child(1) > .btn').click()
         cy.contains('Create Room')
@@ -31,7 +35,79 @@ describe('Assignment1 test suite', function(){
         .and('contain', 'ensuite')
         .and('contain', 'sea view')
         .and('contain', 'penthouse')
+        cy.get(':nth-child(3) > .btn').click()
 
     })
+    it('create client', function(){
+        cy.contains('Clients')
+        cy.get('.blocks > :nth-child(2) > .btn').click()
+        cy.contains('Create Client')
+        cy.get('h2 > .btn').click()
+        cy.contains('New Client')
+        cy.get(':nth-child(1) > input').type('Test Client')
+        cy.get(':nth-child(2) > input').type('testclient@test.com')
+        cy.get(':nth-child(3) > input').type('0701234567')
+        cy.get('.blue').should('contain', 'Save')
+        cy.get('.blue').click()
+        cy.contains('Clients')
+        cy.get('.clients > :last-child').children()
+        .should('contain', 'Test Client')
+        .and('contain', 'testclient@test.com')
+        .and('contain', '0701234567')
+        cy.get(':nth-child(3) > .btn').contains('Back')
+        cy.get(':nth-child(3) > .btn').click()
+    })
+
+    it('create bill', function(){
+        cy.contains('Bills')
+        cy.get(':nth-child(3) > .btn').click()
+        cy.get('h2 > .btn').contains('Create Bill')
+        cy.get('h2 > .btn').click()
+        cy.contains('New Bill')
+        cy.get('input').type('5000')
+        cy.get('.checkbox').click()
+        cy.get('.blue').contains('Save')
+        cy.get('.blue').click()
+        cy.contains('Bills')
+        cy.get('.bills > :last-child').children()
+        .should('contain', 'Value: 5000kr')
+        .and('contain', 'Paid: Yes')
+        cy.get(':nth-child(3) > .btn').contains('Back')
+        cy.get(':nth-child(3) > .btn').click()
+
+    })
+
+    it('create reservation', function(){
+        cy.contains('Reservations')
+        cy.get(':nth-child(4) > .btn').click()
+        cy.get('h2 > .btn').contains('Create Reservation')
+        cy.get('h2 > .btn').click()
+        cy.contains('New Reservation')
+        cy.get(':nth-child(1) > input').type('2021-01-01')
+        cy.get(':nth-child(2) > input').type('2021-01-03')
+        cy.get(':nth-child(3) > select').select('Mikael Eriksson (#2)')
+        cy.get(':nth-child(4) > select').select('Floor 1, Room 101')
+        cy.get(':nth-child(5) > select').select('ID: 1')
+        cy.get('.blue').contains('Save')
+        cy.get('.blue').click()
+        cy.get('.reservations > :last-child').children()
+        .should('contain', 'Mikael Eriksson: 2021-01-01 - 2021-01-03')
+        .and('contain', 'Room: 1')
+        .and('contain', 'Bill: 1')
+        cy.get(':nth-child(3) > .btn').contains('Back')
+        cy.get(':nth-child(3) > .btn').click()
+
+    })
+
+    it('delete room', function(){
+        cy.contains('Tester Hotel Overview')
+        cy.get(':nth-child(1) > .btn').click()
+        cy.get('.rooms > :nth-child(3)').should('exist')
+        cy.get(':nth-child(3) > .action > img').click()
+        cy.get('.menu > :nth-child(2)').click()
+        cy.get('.rooms > :nth-child(3)').should('not.exist')
+
+    })
+
 
 })
