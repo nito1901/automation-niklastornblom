@@ -43,7 +43,6 @@ describe('Assignment1 test suite', function(){
         .and('contain', 'ensuite')
         .and('contain', 'sea view')
         .and('contain', 'penthouse')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -65,8 +64,6 @@ describe('Assignment1 test suite', function(){
         .should('contain', 'Test Client')
         .and('contain', 'testclient@test.com')
         .and('contain', '0701234567')
-        cy.get(':nth-child(3) > .btn').contains('Back')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -86,8 +83,6 @@ describe('Assignment1 test suite', function(){
         cy.get('.bills > :last-child').children()
         .should('contain', 'Value: 5000kr')
         .and('contain', 'Paid: Yes')
-        cy.get(':nth-child(3) > .btn').contains('Back')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -110,8 +105,6 @@ describe('Assignment1 test suite', function(){
         .should('contain', 'Mikael Eriksson: 2021-01-01 - 2021-01-03')
         .and('contain', 'Room: 1')
         .and('contain', 'Bill: 1')
-        cy.get(':nth-child(3) > .btn').contains('Back')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -148,7 +141,6 @@ describe('Assignment1 test suite', function(){
         cy.get(':last-child > .action > img').click()
         cy.get('.menu > :nth-child(2)').click()
         cy.get('.rooms').contains('Floor 2, Room 4').should('not.exist')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -178,7 +170,6 @@ describe('Assignment1 test suite', function(){
         cy.get(':last-child > .action > img').click()
         cy.get('.menu > :nth-child(2)').click()
         cy.get('.clients').contains('Niklas Törnblom').should('not.exist')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -206,7 +197,6 @@ describe('Assignment1 test suite', function(){
         cy.get(':last-child > .action > img').click()
         cy.get('.menu > :nth-child(2)').click()
         cy.get('.bills').contains('6000').should('not.exist')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
@@ -237,7 +227,6 @@ describe('Assignment1 test suite', function(){
         cy.get(':last-child > .action > img').click()
         cy.get('.menu > :nth-child(2)').click()
         cy.get('.reservations').contains('2021-02-02').should('not.exist')
-        cy.get(':nth-child(3) > .btn').click()
         cy.logout()
 
     })
