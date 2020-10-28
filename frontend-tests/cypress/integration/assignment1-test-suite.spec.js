@@ -1,234 +1,81 @@
 /// <reference types="cypress" />
 
-// Function to log in to the system
-Cypress.Commands.add('login', (user, password) => {
-    cy.visit('http://localhost:3000')
-    cy.contains('Login')
-    cy.get('div.field:nth-child(1) > input:nth-child(2)').type(user)
-    cy.get('div.field:nth-child(2) > input:nth-child(2)').type(password)
-    cy.get('.btn').contains('Login')
-    cy.get('.btn').click()
-});
+import * as loginFuncs from '../pages/loginPage'
+import * as logoutFuncs from '../pages/nonSpecific'
+import * as dashboardFuncs from '../pages/dashboardPage'
+import * as roomOverviewFuncs from '../pages/room pages/roomOverview'
+import * as newRoomFuncs from '../pages/room pages/newRoom'
+import * as clientOverviewFuncs from '../pages/client pages/clientOverview'
+import * as newClientFuncs from '../pages/client pages/newClient'
+import * as billOverviewFuncs from '../pages/bill pages/billOverview'
+import * as newBillFuncs from '../pages/bill pages/newBill'
+import * as reservationOverviewFuncs from '../pages/reservation pages/reservationOverview'
+import * as newReservationFuncs from '../pages/reservation pages/newReservation'
 
-// Function to log out of the system
-Cypress.Commands.add('logout', () => {
-    cy.get('.user > .btn').contains('Logout')
-    cy.get('.user > .btn').click()
-    cy.contains('Login')
-});
-
+//Test suite
 describe('Assignment1 test suite', function(){
-    it('create room', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Rooms')
-        cy.get(':nth-child(1) > .btn').click()
-        cy.contains('Create Room')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Room')
-        cy.get(':nth-child(1) > select').select('Double').select('Single').select('Twin')
-        cy.get(':nth-child(2) > input').type('3{uparrow}')
-        cy.get(':nth-child(3) > input').type('1{uparrow}')
-        cy.get('.checkbox').click()
-        cy.get(':nth-child(5) > input').type('500{uparrow}')
-        cy.get(':nth-child(6) > select').select(['Balcony', 'Ensuite', 'Sea View', 'Penthouse'])
-        cy.get('.blue').click()
-        cy.contains('Rooms')
-        cy.get('.rooms > :last-child').children()
-        .should('contain', 'Floor 1, Room 3')
-        .and('contain', 'Category: twin')
-        .and('contain', 'Available: true')
-        .and('contain', 'Price: 500kr')
-        .and('contain', 'Features:')
-        .and('contain', 'balcony')
-        .and('contain', 'ensuite')
-        .and('contain', 'sea view')
-        .and('contain', 'penthouse')
-        cy.logout()
+    beforeEach(() => {
+        loginFuncs.performValidLogin(cy, 'Tester Hotel Overview')
+    })
+
+    afterEach(() => {
+        logoutFuncs.performLogout(cy, 'Login')
+    })
+
+    it('TC01-Create room', function(){
+        dashboardFuncs.navigateToRoomPage(cy, 'Create Room')
+        roomOverviewFuncs.navigateToCreateRoom(cy, 'New Room')
+        newRoomFuncs.createRoom(cy, 'Create Room')
+
+    }) 
+
+    it('TC02-Create client', function(){
+        dashboardFuncs.navigateToClientPage(cy, 'Create Client')
+        clientOverviewFuncs.navigateToCreateClient(cy, 'New Client')
+        newClientFuncs.createClient(cy, 'Create Client')
+
+    }) 
+
+    it('TC03-Create bill', function(){
+        dashboardFuncs.navigateToBillPage(cy, 'Create Bill')
+        billOverviewFuncs.navigateToCreateBill(cy, 'New Bill')
+        newBillFuncs.createBill(cy, 'Create Bill')
 
     })
 
-    it('create client', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Clients')
-        cy.get('.blocks > :nth-child(2) > .btn').click()
-        cy.contains('Create Client')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Client')
-        cy.get(':nth-child(1) > input').type('Test Client')
-        cy.get(':nth-child(2) > input').type('testclient@test.com')
-        cy.get(':nth-child(3) > input').type('0701234567')
-        cy.get('.blue').should('contain', 'Save')
-        cy.get('.blue').click()
-        cy.contains('Clients')
-        cy.get('.clients > :last-child').children()
-        .should('contain', 'Test Client')
-        .and('contain', 'testclient@test.com')
-        .and('contain', '0701234567')
-        cy.logout()
+    it('TC04-Create reservation', function(){
+        dashboardFuncs.navigateToRoomPage(cy, 'Create Room')
+        roomOverviewFuncs.navigateToCreateRoom(cy, 'New Room')
+        newReservationFuncs.createReservation(cy,)
 
     })
 
-    it('create bill', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Bills')
-        cy.get(':nth-child(3) > .btn').click()
-        cy.get('h2 > .btn').contains('Create Bill')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Bill')
-        cy.get('input').type('5000')
-        cy.get('.checkbox').click()
-        cy.get('.blue').contains('Save')
-        cy.get('.blue').click()
-        cy.contains('Bills')
-        cy.get('.bills > :last-child').children()
-        .should('contain', 'Value: 5000kr')
-        .and('contain', 'Paid: Yes')
-        cy.logout()
+    it('TC05-Delete room', function(){
+        dashboardFuncs.navigateToRoomPage(cy, 'Create Room')
+        roomOverviewFuncs.navigateToCreateRoom(cy, 'New Room')
+        newRoomFuncs.createRoom(cy, 'Create Room')
+        roomOverviewFuncs.deleteRoom(cy, 'Create Room')
+    })
+
+    it('TC06-Delete client', function(){
+        dashboardFuncs.navigateToClientPage(cy, 'Create Client')
+        clientOverviewFuncs.navigateToCreateClient(cy, 'New Client')
+        newClientFuncs.createClient(cy, 'Create Client')
+        clientOverviewFuncs.deleteClient(cy, 'Create Client')
 
     })
 
-    it('create reservation', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Reservations')
-        cy.get(':nth-child(4) > .btn').click()
-        cy.get('h2 > .btn').contains('Create Reservation')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Reservation')
-        cy.get(':nth-child(1) > input').type('2021-01-01')
-        cy.get(':nth-child(2) > input').type('2021-01-03')
-        cy.get(':nth-child(3) > select').select('Mikael Eriksson (#2)')
-        cy.get(':nth-child(4) > select').select('Floor 1, Room 101')
-        cy.get(':nth-child(5) > select').select('ID: 1')
-        cy.get('.blue').contains('Save')
-        cy.get('.blue').click()
-        cy.get('.reservations > :last-child').children()
-        .should('contain', 'Mikael Eriksson: 2021-01-01 - 2021-01-03')
-        .and('contain', 'Room: 1')
-        .and('contain', 'Bill: 1')
-        cy.logout()
-
+    it('TC07-Delete bill', function(){
+        dashboardFuncs.navigateToBillPage(cy, 'Create Bill')
+        billOverviewFuncs.navigateToCreateBill(cy, 'New Bill')
+        newBillFuncs.createBill(cy, 'Create Bill')
+        billOverviewFuncs.deleteBill(cy, 'Create Bill')
     })
 
-    it('delete room', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Rooms')
-        cy.get(':nth-child(1) > .btn').click()
-        cy.contains('Create Room')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Room')
-        cy.get(':nth-child(1) > select').select('Double').select('Single').select('Twin')
-        cy.get(':nth-child(2) > input').type('4{uparrow}')
-        cy.get(':nth-child(3) > input').type('2{uparrow}')
-        cy.get('.checkbox').click()
-        cy.get(':nth-child(5) > input').type('500{uparrow}')
-        cy.get(':nth-child(6) > select').select(['Balcony', 'Ensuite', 'Sea View', 'Penthouse'])
-        cy.get('.blue').click()
-        cy.contains('Rooms')
-        cy.get('.rooms > :last-child').children()
-        .should('contain', 'Floor 2, Room 4')
-        .and('contain', 'Category: twin')
-        .and('contain', 'Available: true')
-        .and('contain', 'Price: 500kr')
-        .and('contain', 'Features:')
-        .and('contain', 'balcony')
-        .and('contain', 'ensuite')
-        .and('contain', 'sea view')
-        .and('contain', 'penthouse')
-        cy.get(':nth-child(3) > .btn').click()
-        cy.contains('Tester Hotel Overview')
-        cy.get(':nth-child(1) > .btn').click()
-        cy.get('.rooms').contains('Floor 2, Room 4').should('exist')
-        cy.get(':last-child > .action > img').click()
-        cy.get('.menu > :nth-child(2)').click()
-        cy.get('.rooms').contains('Floor 2, Room 4').should('not.exist')
-        cy.logout()
-
+    it('TC08-Delete reservation', function(){
+        dashboardFuncs.navigateToRoomPage(cy, 'Create Room')
+        roomOverviewFuncs.navigateToCreateRoom(cy, 'New Room')
+        newReservationFuncs.createReservation(cy,)
+        reservationOverviewFuncs.deleteReservation(cy, 'Create Reservation')
     })
-
-    it('delete client', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Clients')
-        cy.get('.blocks > :nth-child(2) > .btn').click()
-        cy.contains('Create Client')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Client')
-        cy.get(':nth-child(1) > input').type('Niklas Törnblom')
-        cy.get(':nth-child(2) > input').type('niklas@test.com')
-        cy.get(':nth-child(3) > input').type('0701234567')
-        cy.get('.blue').should('contain', 'Save')
-        cy.get('.blue').click()
-        cy.contains('Clients')
-        cy.get('.clients > :last-child').children()
-        .should('contain', 'Niklas Törnblom')
-        .and('contain', 'niklas@test.com')
-        .and('contain', '0701234567')
-        cy.get(':nth-child(3) > .btn').contains('Back')
-        cy.get(':nth-child(3) > .btn').click()
-        cy.contains('Tester Hotel Overview')
-        cy.get('.blocks > :nth-child(2) > .btn').click()
-        cy.get('.clients').contains('Niklas Törnblom').should('exist')
-        cy.get(':last-child > .action > img').click()
-        cy.get('.menu > :nth-child(2)').click()
-        cy.get('.clients').contains('Niklas Törnblom').should('not.exist')
-        cy.logout()
-
-    })
-
-    it('delete bill', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Bills')
-        cy.get(':nth-child(3) > .btn').click()
-        cy.get('h2 > .btn').contains('Create Bill')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Bill')
-        cy.get('input').type('6000')
-        cy.get('.checkbox').click()
-        cy.get('.blue').contains('Save')
-        cy.get('.blue').click()
-        cy.contains('Bills')
-        cy.get('.bills > :last-child').children()
-        .should('contain', 'Value: 6000kr')
-        .and('contain', 'Paid: Yes')
-        cy.get(':nth-child(3) > .btn').contains('Back')
-        cy.get(':nth-child(3) > .btn').click()
-        cy.contains('Tester Hotel Overview')
-        cy.get('.blocks > :nth-child(3) > .btn').click()
-        cy.get('.bills').contains('6000').should('exist')
-        cy.get(':last-child > .action > img').click()
-        cy.get('.menu > :nth-child(2)').click()
-        cy.get('.bills').contains('6000').should('not.exist')
-        cy.logout()
-
-    })
-
-    it('delete reservation', function(){
-        cy.login('tester01', 'GteteqbQQgSr88SwNExUQv2ydb7xuf8c')
-        cy.contains('Reservations')
-        cy.get(':nth-child(4) > .btn').click()
-        cy.get('h2 > .btn').contains('Create Reservation')
-        cy.get('h2 > .btn').click()
-        cy.contains('New Reservation')
-        cy.get(':nth-child(1) > input').type('2021-02-02')
-        cy.get(':nth-child(2) > input').type('2021-02-04')
-        cy.get(':nth-child(3) > select').select('Mikael Eriksson (#2)')
-        cy.get(':nth-child(4) > select').select('Floor 1, Room 101')
-        cy.get(':nth-child(5) > select').select('ID: 1')
-        cy.get('.blue').contains('Save')
-        cy.get('.blue').click()
-        cy.get('.reservations > :last-child').children()
-        .should('contain', 'Mikael Eriksson: 2021-02-02 - 2021-02-04')
-        .and('contain', 'Room: 1')
-        .and('contain', 'Bill: 1')
-        cy.get(':nth-child(3) > .btn').contains('Back')
-        cy.get(':nth-child(3) > .btn').click()
-        cy.contains('Tester Hotel Overview')
-        cy.get('.blocks > :nth-child(4) > .btn').click()
-        cy.get('.reservations').contains('2021-02-02').should('exist')
-        cy.get(':last-child > .action > img').click()
-        cy.get('.menu > :nth-child(2)').click()
-        cy.get('.reservations').contains('2021-02-02').should('not.exist')
-        cy.logout()
-
-    })
-
 })
