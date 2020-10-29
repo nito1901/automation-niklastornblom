@@ -10,6 +10,7 @@ const availableInput = '.checkbox'
 const priceInput = ':nth-child(5) > input'
 const featuresInput = ':nth-child(6) > select'
 const saveButton = '.blue'
+const createdRoom = '.rooms > :last-child'
 
 
 //Actions
@@ -28,7 +29,7 @@ function createRoom(cy, contentToConFirm){
     cy.get(featuresInput).select(featureType)
     cy.get(saveButton).click()
     cy.contains(contentToConFirm)
-    cy.get('.rooms > :last-child')
+    cy.get(createdRoom)
     .should('contain', 'Floor ' + floorNumber + ', Room ' + roomNumber)
     .and('contain', 'Available: true')
     .and('contain', 'Price: '+ priceNumber + 'kr')
